@@ -12,28 +12,35 @@ def countdown(time_in_seconds):
         time_in_seconds -= 1
     print("Fire in the hole")
 
+def toggle_timer(start_timer, args):
+    start_timer = not start_timer
+    args.toggle = False
+    return start_timer
 
 def main():
     study_time = 25*60
     break_time = 5*60
     study_sessions = 4
     long_break_time = 15*60
+    start_timer = True      # True while countdown is running, False when paused
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-s", "--start", help="Start the timer", action="store_true")
-    parser.add_argument("-p", "--pause", help="Pause the timer", action="store_false", dest="start")
+    parser.add_argument("-s", "--start", help="Start the timer", action="store_true", dest="start_flag")
+    parser.add_argument("-p", "--pause", help="Pause the timer", action="store_true", dest="pause_flag")
     parser.add_argument("-r", "--reset", help="Reset the timer", action="store_true")
     parser.add_argument("-t", "--toggle", help="Toggle the timer", action="store_true")
 
-    def toggle_timer(args):
-        args.start = not args.start
-        return args
+    if parser.parse_args().start_flag:
+        start_timer = True
+
+    if parser.parse_args().pause_flag:
+        start_timer = False
 
     if parser.parse_args().toggle:
-        toggle_timer(parser.parse_args())
+        start_timer = toggle_timer(start_timer, parser.parse_args())
 
-    print("Start: ", parser.parse_args().start)
+    print("Start: ", start_timer)
     print("Reset: ", parser.parse_args().reset)
 
 
