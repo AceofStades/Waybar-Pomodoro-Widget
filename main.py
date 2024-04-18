@@ -9,7 +9,7 @@ default_config = {
         "study_sessions": 4,
         "long_break_time": 15 * 60,
         "last_paused_at": 0,            # Placeholder for time when timer was paused
-        "countdown_running": False,   # Placeholder for checking current state of timer
+        "state_running": False,   # Placeholder for checking current state of timer
         }
 
 config_filename = "config.json"
@@ -28,19 +28,19 @@ def countdown(time_in_seconds):
         time_in_seconds -= 1
     print("Fire in the hole")
 
-def toggle_timer(countdown_running, args):
-    countdown_running = not countdown_running
+def toggle_timer(state_running, args):
+    state_running = not state_running
     args.toggle = False
-    return countdown_running
+    return state_running
 
-def check_current_state(args, countdown_running):
+def check_current_state(args, state_running):
     if args.start:
-        countdown_running = True
+        state_running = True
     if args.pause:
-        countdown_running = False
+        state_running = False
     if args.toggle:
-        countdown_running = toggle_timer(countdown_running, args)
-    return countdown_running
+        state_running = toggle_timer(state_running, args)
+    return state_running
 
 def main():
     # Check for file existence and create default config if it doesn't exist
@@ -58,7 +58,7 @@ def main():
     break_time = config["break_time"]
     study_sessions = config["study_sessions"]
     long_break_time = config["long_break_time"]
-    countdown_running = config["countdown_running"]      # True while countdown is running, False when paused
+    state_running = config["state_running"]      # True while countdown is running, False when paused
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-s", "--start", help="Start the timer", action="store_true")
@@ -66,9 +66,9 @@ def main():
     parser.add_argument("-r", "--reset", help="Reset the timer", action="store_true")
     parser.add_argument("-t", "--toggle", help="Toggle the timer", action="store_true")
 
-    countdown_running = check_current_state(parser.parse_args(), countdown_running)
+    state_running = check_current_state(parser.parse_args(), state_running)
 
-    if countdown_running == True and parser.parse_args().reset == False:
+    if state_running == True and parser.parse_args().reset == False:
         countdown(study_time)
 
 if __name__ == "__main__":
