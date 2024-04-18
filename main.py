@@ -2,7 +2,6 @@ import time
 import json
 import argparse
 
-
 def countdown(time_in_seconds):
     while time_in_seconds:
         mins, secs = divmod(time_in_seconds, 60)
@@ -17,6 +16,15 @@ def toggle_timer(start_timer, args):
     args.toggle = False
     return start_timer
 
+def check_current_state(args, start_timer):
+    if args.start:
+        start_timer = True
+    if args.pause:
+        start_timer = False
+    if args.toggle:
+        start_timer = toggle_timer(start_timer, args)
+    return start_timer
+
 def main():
     study_time = 25*60
     break_time = 5*60
@@ -25,24 +33,18 @@ def main():
     start_timer = True      # True while countdown is running, False when paused
 
     parser = argparse.ArgumentParser()
-
-    parser.add_argument("-s", "--start", help="Start the timer", action="store_true", dest="start_flag")
-    parser.add_argument("-p", "--pause", help="Pause the timer", action="store_true", dest="pause_flag")
+    parser.add_argument("-s", "--start", help="Start the timer", action="store_true")
+    parser.add_argument("-p", "--pause", help="Pause the timer", action="store_true")
     parser.add_argument("-r", "--reset", help="Reset the timer", action="store_true")
     parser.add_argument("-t", "--toggle", help="Toggle the timer", action="store_true")
 
-    if parser.parse_args().start_flag:
-        start_timer = True
-
-    if parser.parse_args().pause_flag:
-        start_timer = False
-
-    if parser.parse_args().toggle:
-        start_timer = toggle_timer(start_timer, parser.parse_args())
+    start_timer = check_current_state(parser.parse_args(), start_timer)
 
     print("Start: ", start_timer)
     print("Reset: ", parser.parse_args().reset)
 
+    if start_timer == True and parser.parse_args().reset == False:
+        countdown(study_time)
 
 if __name__ == "__main__":
     main()
