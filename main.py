@@ -27,7 +27,7 @@ def create_default_json(config_filename):
 # Countdown timer
 def countdown(time_in_seconds, state_running):
     while time_in_seconds:
-        if state_running == False:
+        if not state_running:
             update_config(time_in_seconds, state_running)
             break
         else:
@@ -38,7 +38,7 @@ def countdown(time_in_seconds, state_running):
                 time.sleep(1)
                 time_in_seconds -= 1
             except:
-                update_config(time_in_seconds)
+                update_config(time_in_seconds, state_running)
                 break
 
 
